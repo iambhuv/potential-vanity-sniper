@@ -1,0 +1,63 @@
+{
+  "gateway": "wss://gateway.discord.gg/?v=10&encoding=json",
+  "COMMENT-#1": "All volunteers accounts must have permission to manage server's vanity url code in target-guild's!",
+  "volunteers": [
+    "<pass>:<tkn>"
+  ],
+  "init_payload": {
+    "op": 2,
+    "d": {
+      "token": "<tkn>",
+      "capabilities": 161789,
+      "properties": {
+        "os": "Windows",
+        "browser": "Chrome",
+        "device": "",
+        "system_locale": "en-US",
+        "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "browser_version": "136.0.0.0",
+        "os_version": "10",
+        "referrer": "https://www.google.com/",
+        "referring_domain": "www.google.com",
+        "search_engine": "google",
+        "referrer_current": "",
+        "referring_domain_current": "",
+        "release_channel": "stable",
+        "client_build_number": 400637,
+        "client_event_source": null,
+        "has_client_mods": false,
+        "client_launch_id": "30b4166e-0d10-4ca1-9da3-692099e7cf1f",
+        "client_app_state": "unfocused",
+        "is_fast_connect": false,
+        "latest_headless_tasks": [],
+        "latest_headless_task_run_seconds_before": null,
+        "gateway_connect_reasons": "AppSkeleton"
+      },
+      "presence": {
+        "status": "unknown",
+        "since": 0,
+        "activities": [],
+        "afk": false
+      },
+      "compress": false,
+      "client_state": {
+        "guild_versions": {}
+      }
+    }
+  },
+  "COMMENT-#2": "All volunteers should be joined in the \"snipe-guild\" to detect vanity movements!",
+  "snipes": [
+    {
+      "name": "test-snipe",
+      "vanity": "bhuvnesh",
+      "snipe-guild": "1374053641597616239",
+      "target-guild": "1374053641597616239"
+    },
+    {
+      "name": "test-snipe-2",
+      "vanity": "nitroo",
+      "snipe-guild": "1374053641597616232",
+      "target-guild": "1374053641597616229"
+    }
+  ]
+}
