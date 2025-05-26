@@ -2,9 +2,9 @@
 #include <iostream>
 #include <fstream>
 
-const char *CONFIG_JSON_FILE = "snipe.json";
+#include "config.h"
 
-Json::Reader reader;
+const char *CONFIG_JSON_FILE = "snipe.json";
 
 void read_config_file(Json::Value &config)
 {
