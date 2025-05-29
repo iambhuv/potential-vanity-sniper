@@ -1,3 +1,4 @@
+#pragma once
 
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>

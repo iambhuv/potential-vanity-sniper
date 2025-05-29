@@ -1,4 +1,4 @@
-#include <jsoncpp/json/json.h>
+#include <simdjson.h>
 #include <iostream>
 #include <fstream>
 
@@ -6,7 +6,8 @@
 
 const char *CONFIG_JSON_FILE = "snipe.json";
 
-void read_config_file(Json::Value &config)
+
+jelem read_config_file(simdjson::dom::parser &jparser)
 {
   std::ifstream config_file(CONFIG_JSON_FILE);
   std::string config_json;
@@ -25,11 +26,10 @@ void read_config_file(Json::Value &config)
     std::cerr << "Cannot find snipe.json config file." << std::endl;
     throw std::runtime_error("Cannot find snipe.json config file.");
   }
+  
+  return jparser.parse(config_json).value();
 
-  if (!reader.parse(config_json, config))
-  {
-    std::cerr << "Failed to parse config file!\n"
-              << reader.getFormattedErrorMessages() << std::endl;
-    throw std::runtime_error("Failed to parse config file!");
-  }
+  // for (auto vtr : config["volunteers"]) {
+  //   std::cout << std::string_view(vtr) << std::endl;
+  // }
 }

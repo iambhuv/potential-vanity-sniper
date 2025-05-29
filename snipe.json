@@ -2,12 +2,10 @@
   "gateway": "wss://gateway.discord.gg/?v=10&encoding=json",
   "COMMENT-#1": "All volunteers accounts must have permission to manage server's vanity url code in target-guild's!",
   "volunteers": [
-    "GicIIB35123@:MTI4ODMzNTUyNjYwNDE4MTU0OA.G7C5RR.gqKTsNB9kAQzJjLFjruxmzZVrNbY63HwNED9Pg",
     "dHOnxI54123@:MTI4ODMyOTM4NDA5MjIzNzg0NA.GYRBCF.Eymn3U_gYQmfhoAypkZtt-9w9IQRYvHUNhDIc8",
-    "HcX6BH51123@:MTI4ODMzMzYzNzU3NzczNjIwMg.GHqr2h.ntVcvhPEpe3r0xwwZEuVT6t5FUNd4QT2JYa-uc",
+    "HcX6BH51123@:MTI4ODMzMzYzNzU3NzczNjIwMg.G728c0.Lxsp58ozOHqJuuiCY54GuYUhAPBOHXrfOYztjg",
     "YzxY7277123@:MTI4ODMzNDgxMjA2Njg3NzQ3Mg.G3cTBQ.XqP2jhw_gBK1FPq90JGmT2g07x66kRJKoHnCyo",
     "ktWbqR76123@:MTI4ODMyNTM5Njk4MjUzNDIxNQ.GHpUDC._W4LjrsuxY7HAlqOupkKVUZNf1ePyjKNCkBRY0",
-    "YrVQR826123@:MTI4ODMzMzYxMzU0NDI0NzQzNw.GBAlX8.Y_bFJvZwtFj0Tog-lvRFjMbv9ipxvuitCu2LpA",
     "TvnTZ438123@:MTI4ODMzNDcyMzA3NjE5NDM0NA.GRaxYK._js6QPGBSKqpG_rDFb6jY_nGH_2PEkJINGxYlI"
   ],
   "init_payload": {

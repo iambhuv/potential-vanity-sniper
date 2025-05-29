@@ -67,7 +67,7 @@ uint32_t generate_totp(const std::string& base32_secret, uint64_t time_step = 30
 }
 
 int main() {
-    std::string secret = "f47iufl2vh24i4lhckpce6tknylzen36"; // example base32 secret
+    std::string secret = "xdycy4fz325g7gjwskldxo526mcmozii"; // example base32 secret
     uint32_t totp = generate_totp(secret);
     std::cout << "TOTP: " << totp << std::endl;
     return 0;

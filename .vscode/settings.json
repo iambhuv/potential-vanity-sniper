@@ -109,5 +109,9 @@
     "shared_mutex": "cpp",
     "stdfloat": "cpp"
   },
-  "C_Cpp.default.compilerPath": "/usr/bin/g++"
+  "C_Cpp.default.compilerPath": "/usr/bin/g++",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.arguments": ["--header-insertion=never", "-pretty", "--background-index"],
+  "clangd.checkUpdates": true,
+  "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json"
 }

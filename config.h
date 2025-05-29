@@ -1,5 +1,5 @@
 #pragma once
 
-#include<jsoncpp/json/json.h>
+#include <simdjson.h>
 
-Json::Reader reader;
+typedef simdjson::dom::element jelem;

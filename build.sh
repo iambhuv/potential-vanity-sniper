@@ -1,1 +1,0 @@
-g++ -std=c++17 -pthread main.cpp -lboost_system -lssl -lcrypto -mavx2 -ljsoncpp -o ./out/sniper

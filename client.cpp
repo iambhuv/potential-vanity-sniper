@@ -3,6 +3,7 @@
 #include "client.h"
 #include "handler.cpp"
 #include "volunteers.h"
+#include "main.h"
 
 std::shared_ptr<boost::asio::ssl::context> on_tls_init(const std::string &hostname)
 {
@@ -22,10 +23,10 @@ std::shared_ptr<boost::asio::ssl::context> on_tls_init(const std::string &hostna
 }
 
 
-void init_client(Json::Value &config, Volunteer &volunteer)
+void init_client(jelem &config, asmt_ptr asmt)
 {
-  client_ptr cptr = std::make_shared<client>();
-  std::string uri = config["gateway"].asString();
+  client_ptr cptr = asmt->client;
+  std::string uri = std::string(config["gateway"]);
 
   try
   {
@@ -36,26 +37,25 @@ void init_client(Json::Value &config, Volunteer &volunteer)
     cptr->set_tls_init_handler(bind(&on_tls_init, "gateway.discord.gg"));
 
     cptr->set_open_handler([&](websocketpp::connection_hdl hdl)
-                           { open_handler(hdl, cptr, volunteer); });
+                           { open_handler(hdl, cptr, asmt); });
 
     cptr->set_message_handler([&](websocketpp::connection_hdl hdl, message_ptr msg)
-                              { message_handler(hdl, msg, cptr, volunteer); });
+                              { message_handler(hdl, msg, cptr, asmt); });
 
     websocketpp::lib::error_code ec;
     client::connection_ptr con = cptr->get_connection(uri, ec);
     if (ec)
     {
-      std::cout << "[" << volunteer.id << "] Connection failed: " << ec.message() << std::endl;
-      
-      throw std::runtime_error("Connection Failed");
+      std::cout << "[" << asmt->volunteer.id << "] Connection failed: " << ec.message() << std::endl;
+      // throw std::runtime_error("Connection Failed");
     }
 
     cptr->connect(con);
     cptr->run();
 
-    // hb_ackrunning = false;
-    // if (heartbeat_thread.joinable())
-    //   heartbeat_thread.join();
+    asmt->heartbeat_running = false;
+    if (asmt->heartbeat_thread.joinable())
+      asmt->heartbeat_thread.join();
   }
   catch (std::exception &e)
   {
