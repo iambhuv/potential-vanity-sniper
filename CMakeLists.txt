@@ -21,6 +21,7 @@ FetchContent_MakeAvailable(cpr)
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenSSL REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 add_executable(sniper main.cpp)
 
@@ -30,6 +31,7 @@ target_link_libraries(sniper
   Boost::system
   OpenSSL::SSL
   OpenSSL::Crypto
+  SQLite::SQLite3
   simdjson
   cpr::cpr
 )

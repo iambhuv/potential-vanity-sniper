@@ -1,12 +1,10 @@
 {
   "gateway": "wss://gateway.discord.gg/?v=10&encoding=json",
-  "COMMENT-#1": "All volunteers accounts must have permission to manage server's vanity url code in target-guild's!",
+  "COMMENT-#1": "Yeah dont change this for the sake of our lil volunteers",
+  "mfa": "4XGO6XLMLW2PQ4BLSEH3WOIKAMGK44WB",
+  "COMMENT-#2": "All volunteers accounts must have permission to manage server's vanity url code in target-guild's!",
   "volunteers": [
-    "dHOnxI54123@:MTI4ODMyOTM4NDA5MjIzNzg0NA.GYRBCF.Eymn3U_gYQmfhoAypkZtt-9w9IQRYvHUNhDIc8",
-    "HcX6BH51123@:MTI4ODMzMzYzNzU3NzczNjIwMg.G728c0.Lxsp58ozOHqJuuiCY54GuYUhAPBOHXrfOYztjg",
-    "YzxY7277123@:MTI4ODMzNDgxMjA2Njg3NzQ3Mg.G3cTBQ.XqP2jhw_gBK1FPq90JGmT2g07x66kRJKoHnCyo",
-    "ktWbqR76123@:MTI4ODMyNTM5Njk4MjUzNDIxNQ.GHpUDC._W4LjrsuxY7HAlqOupkKVUZNf1ePyjKNCkBRY0",
-    "TvnTZ438123@:MTI4ODMzNDcyMzA3NjE5NDM0NA.GRaxYK._js6QPGBSKqpG_rDFb6jY_nGH_2PEkJINGxYlI"
+    "<password>:<token>"
   ],
   "init_payload": {
     "op": 2,
@@ -49,19 +47,13 @@
       }
     }
   },
-  "COMMENT-#2": "All volunteers should be joined in the \"snipe-guild\" to detect vanity movements!",
+  "COMMENT-#3": "All volunteers should be joined in the \"snipe-guild\" to detect vanity movements!",
   "snipes": [
     {
       "name": "test-snipe",
       "vanity": "bhuvnesh",
       "snipe-guild": "1374053641597616239",
       "target-guild": "1374053641597616239"
-    },
-    {
-      "name": "test-snipe-2",
-      "vanity": "nitroo",
-      "snipe-guild": "1374053641597616232",
-      "target-guild": "1374053641597616229"
     }
   ]
 }

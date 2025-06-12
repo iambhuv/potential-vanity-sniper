@@ -4,7 +4,7 @@
 #include <curl/curl.h>
 #include <string>
 
-enum API_METHOD { GET, POST, PUT, DELETE };
+enum API_METHOD { GET, POST, PUT, DELETE, PATCH };
 
 enum HTTP_STATUS {
   BROKEN = 0,
@@ -27,12 +27,17 @@ class CurlClient {
   CURL *curl;
   std::string base_url;
   struct curl_slist *headers = NULL;
+  std::string cookies = "";
 
 public:
-  CurlClient(const std::string &host = "https://canary.discord.com") : base_url(host) {
+  CurlClient(const std::string &token,
+             const std::string &host = "https://canary.discord.com")
+      : base_url(host) {
     curl = curl_easy_init();
 
+    headers = curl_slist_append(headers, ("authorization: " + token).c_str());
     headers = curl_slist_append(headers, "accept: */*");
+    headers = curl_slist_append(headers, "content-type: application/json");
     headers = curl_slist_append(headers, "accept-language: en-US,en;q=0.9");
     headers = curl_slist_append(headers, "priority: u=1, i");
     headers = curl_slist_append(headers,
@@ -61,7 +66,6 @@ public:
         "ItODExOC0zYzI0MzQ5NzEwMjkiLCJjbGllbnRfYXBwX3N0YXRlIjoiZm9jdXNlZCIsImNs"
         "aWVudF9oZWFydGJlYXRfc2Vzc2lvbl9pZCI6IjBiYTYxMDllLTljOTgtNDk5ZS05MDQ4LT"
         "Q2ODJjMTBjMTJjOSJ9");
-    headers = curl_slist_append(headers, "content-type: application/json");
 
     curl_easy_setopt(curl, CURLOPT_FORBID_REUSE, 0L);  // allow reuse
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L); // enable TCP keepalive
@@ -74,34 +78,77 @@ public:
     curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
   }
 
-  ~CurlClient() { curl_easy_cleanup(curl); }
+  ~CurlClient() {
+    std::cout << "destroyed" << std::endl;
+    curl_easy_cleanup(curl);
+  }
 
   void set_header(const std::string &header) {
     headers = curl_slist_append(headers, header.c_str());
   }
 
+  // void set_cookie(const std::string &cookie) {
+  //   cookies = cookie + cookies;
+  // }
+
   std::string request(API_METHOD method, const std::string &path,
-                      const std::string &body = "") {
+                      const std::string &body = "",
+                      const std::string &extra_cookies = "") {
     std::string response;
 
     curl_easy_setopt(curl, CURLOPT_URL, (base_url + path).c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
+    std::string all_cookies = cookies;
+    if (!extra_cookies.empty()) {
+      all_cookies += "; " + extra_cookies;
+    }
+
+    curl_easy_setopt(curl, CURLOPT_COOKIE, cookies.c_str());
+
+    // Reset to default first
+    curl_easy_setopt(curl, CURLOPT_HTTPGET, 0L);
+    curl_easy_setopt(curl, CURLOPT_POST, 0L);
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, nullptr);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, nullptr);
+
     if (method == POST) {
       curl_easy_setopt(curl, CURLOPT_POST, 1L);
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+      if (!body.empty()) {
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body.length());
+      }
     } else if (method == PUT) {
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+      if (!body.empty()) {
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body.length());
+      }
+    } else if (method == PATCH) {
+      curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+      if (!body.empty()) {
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body.length());
+      }
     } else if (method == DELETE) {
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+      // Note: DELETE with body is uncommon but valid
+      if (!body.empty()) {
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body.length());
+      }
     } else { // GET
       curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
     }
 
-    curl_easy_perform(curl);
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK) {
+      // Handle error appropriately for your use case
+      throw std::runtime_error("curl_easy_perform() failed: " +
+                               std::string(curl_easy_strerror(res)));
+    }
+
     return response;
   }
 };

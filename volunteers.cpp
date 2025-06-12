@@ -1,8 +1,11 @@
-#include "volunteers.h"
-#include "config.h"
-#include <iostream>
 #include <string>
 #include <vector>
+
+#include "volunteers.h"
+#include "config.h"
+#include "db.cpp"
+
+#include <sqlite3.h>
 
 std::string base64_decode(const std::string_view in) {
   const uint8_t lookup[] = {

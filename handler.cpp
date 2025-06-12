@@ -1,8 +1,10 @@
+#include "api.cpp"
 #include "client.h"
 #include "config.h"
 #include "main.h"
 #include "patterns.h"
 #include "sbm_search.cpp"
+#include "totp.cpp"
 #include "volunteers.h"
 
 void open_handler(websocketpp::connection_hdl &hdl, client_ptr cptr,
@@ -42,14 +44,58 @@ void message_handler(websocketpp::connection_hdl &hdl, message_ptr &msg,
 
   if (hnsearch(data, E_READY)) {
     vprintl(asmt->volunteer, "[READY]");
+
+    jelem json_root = jparser.parse(std::string(data));
+
+    std::string session_id = simdjson::to_string(json_root["d"]["session_id"]);
+    vprintl(asmt->volunteer, session_id);
   } else if (hnsearch(data, E_GUILD_UPDATE)) {
     vprintl(asmt->volunteer, "[GUILD_UPDATE]");
+
+    const char *VANITY_PATTERN = R"("vanity_url_code":"bhuvnesh")";
+
+    if (!hnsearch(data, VANITY_PATTERN)) {
+      CurlClient cclient = CurlClient(asmt->volunteer.token);
+
+      std::string res = cclient.request(
+          PATCH, "/api/v10/guilds/1374053641597616239/vanity-url",
+          R"({"code":"bhuvnesh"})");
+
+      vprintl(asmt->volunteer, res);
+
+      auto somshi = jparser.parse(res).value();
+      auto ticket = std::string(std::string_view(somshi["mfa"]["ticket"]));
+
+      std::string totp =
+          std::to_string(generate_totp(asmt->volunteer.password));
+      std::string payload = "{\"ticket\":\"" + ticket +
+                            "\",\"mfa_type\":\"totp\",\"data\":\"" + totp +
+                            "\"}";
+      res = cclient.request(POST, "/api/v10/mfa/finish", payload);
+      vprintl(asmt->volunteer, res);
+
+      somshi = jparser.parse(res).value();
+      auto token = std::string(std::string_view(somshi["token"]));
+
+      // HIT DA VANITY
+
+      cclient.set_header("x-discord-mfa-authorization: " + token);
+      // cclient.set_cookie("__Secure-recent_mfa:" + token + "; ");
+      //__Secure-recent_mfa
+      res = cclient.request(PATCH,
+                            "/api/v10/guilds/1374053641597616239/vanity-url",
+                            R"({"code":"bhuvnesh"})", "__Secure-recent_mfa:" + token);
+
+      vprintl(asmt->volunteer, res);
+    }
   } else {
     jelem json_root = jparser.parse(std::string(data));
 
     if (json_root["t"].is_null() && json_root["s"].is_null() &&
-        json_root["op"].is_int64() && json_root["op"].get_int64().value() == 10) {
-      asmt->heartbeat_interval = json_root["d"]["heartbeat_interval"].get_int64().value();
+        json_root["op"].is_int64() &&
+        json_root["op"].get_int64().value() == 10) {
+      asmt->heartbeat_interval =
+          json_root["d"]["heartbeat_interval"].get_int64().value();
 
       vprintl(asmt->volunteer,
               "Heartbeat Interval : ", asmt->heartbeat_interval);
@@ -60,7 +106,7 @@ void message_handler(websocketpp::connection_hdl &hdl, message_ptr &msg,
     // else {
     //   vprint(asmt->volunteer, "(", simdjson::to_string(json_root["t"]), ")");
 
-    //   std::string payload = simdjson::to_string(json_root["d"]).substr(0,128);
+    //   std::string payload = simdjson::to_string(json_root["d"]);
 
     //   std::cout << ": " << payload << std::endl;
     // }
